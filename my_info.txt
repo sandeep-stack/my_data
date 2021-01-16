@@ -1,0 +1,25 @@
+ command to get update of target is alive or not
+ping 10.145.162.229  -t
+instead of all the steps of shailaja like libva GMM etc
+if we have installed PVC_PO_OSBV we can directly use
+sudo apt-get install ffmpeg
+==========================
+chmod 777 (folder name) if asked for permissions
+===================================
+chmod +x * (for all permissions)
+=================================================================================
+==================BELOW ARE THE STEPS TO FOLLOW IF BOTH TARGETS HAVE SAME IP=========
+Change hostname (edit /etc/hostname to update) ex: gfxsv1234502
+2.        Remove the following files:
+a.        sudo rm /etc/machine-id
+b.        sudo rm /var/lib/dbus/machine-id
+3.        Run the following two commands:
+a.        sudo dbus-uuidgen --ensure=/etc/machine-id
+b.        sudo dbus-uuidgen --ensure 
+4.        Run the following command to renew the IP
+a.        sudo dhclient -r;
+1.                 sudo dhclient 
+5.        Reboot the system and check if there is a new IP generated
+6.        Once we make sure the IP has changed, reboot a few times to ensure the change is consistent 
+=================================================================
+ 
