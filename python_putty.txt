@@ -1,0 +1,56 @@
+import time
+from pywinauto.application import Application
+z,y=3,4
+
+def get_data(c):
+    with open('C:\\website\\Workload_test.txt') as f:
+     lines = f.readlines()
+    return lines[c].strip()
+
+def connect_to_target():
+	cmd_line = "putty -ssh" + " " + get_data(1) + "@" + get_data(0)
+	app = Application().start(cmd_line)
+	putty = app.PuTTY
+	putty.wait('ready')
+	time.sleep(1)
+	putty.type_keys(get_data(2))
+	putty.type_keys("{ENTER}")
+	time.sleep(2)
+	print("connected to target")
+	putty.type_keys("sudo su", with_spaces=True)
+	time.sleep(1)
+	putty.type_keys("{ENTER}")
+	putty.type_keys(get_data(2))
+	putty.type_keys("{ENTER}")
+	return putty
+
+def run_commands(x,y):
+	loop="for i in " + "{{}" + "1..3000" + "{}}" + ";"
+	echo= "echo ------------------------ ITERATION $i/3000 complete-----------------------"
+	putty=connect_to_target()
+	time.sleep(1)
+	putty.type_keys("cd" + " " + get_data(x), with_spaces=True)
+	time.sleep(1)
+	putty.type_keys("{ENTER}")
+	putty.type_keys(loop, with_spaces=True)
+	putty.type_keys("{ENTER}")
+	putty.type_keys("do")
+	putty.type_keys("{ENTER}")
+	putty.type_keys(get_data(y),with_spaces=True,with_newlines=True)
+	time.sleep(1)
+	print("executing command")
+	putty.type_keys("{ENTER}")
+	putty.type_keys(echo, with_spaces=True)
+	putty.type_keys("{ENTER}")
+	putty.type_keys("done")
+	putty.type_keys("{ENTER}")
+	time.sleep(1)
+	putty.type_keys("{ENTER}")
+	putty.type_keys("{ENTER}")
+
+
+
+for x in range(2):
+  run_commands(z,y)
+  z=z+2
+  y=y+2

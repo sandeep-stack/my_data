@@ -1,0 +1,5 @@
+folder,command_line
+/home/gfxsv/tap_3.6_Linux/apps/SVMBench,./bwRead004096KB.sh
+home/gfxsv/tap_3.6_Linux/apps/Phoronix,./viennacl.sh
+/home/gfxsv/tap_3.6_Linux/apps/clpeak/64b,./clpeak --global-bandwidth
+/home/gfxsv/binocle_Stress_computeTest/bin,./BinOCLe 
