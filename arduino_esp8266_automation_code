@@ -1,0 +1,132 @@
+#include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <ESP8266WebServer.h>
+#include <LiquidCrystal_I2C.h> //This library you can add via Include Library > Manage Library > 
+#include<Wire.h>
+LiquidCrystal_I2C lcd(0x27,16,2);
+//D3 and D4 of Esp8266 is I2c in above case
+
+const static char MAIN_page[] PROGMEM = R"=====(
+<!DOCTYPE html>
+<html>
+<body>
+<center>
+<h1>WiFi LED on off demo: 1</h1><br>
+<h1>Click to turn <a href="ledOn">LED ON</a></h1><br>
+<h1>Click to turn <a href="ledOff">LED OFF</a></h1><br>
+<hr>
+<a href="https://www.youtube.com">GO to youtube</a>
+</center>
+
+</body>
+</html>
+)=====";
+
+//---------------------------------------------------------------
+//Our HTML webpage contents in program memory
+
+
+
+//---------------------------------------------------------------
+//On board LED Connected to GPIO2
+#define LED D2 
+
+//SSID and Password of your WiFi router
+const char* ssid = "connected";
+const char* password = "1122334455";
+
+//Declare a global object variable from the ESP8266WebServer class.
+ESP8266WebServer server(80); //Server on port 80
+
+//===============================================================
+// This routine is executed when you open its IP in browser
+//===============================================================
+void handleRoot() {
+String s = MAIN_page; //Read HTML contents
+server.send(200, "text/html", s); //Send web page
+}
+
+void handleLEDon() {
+digitalWrite(LED,LOW);
+digitalWrite(LED,LOW);//LED is connected in reverse
+lcd.setCursor(0,1);
+lcd.print("POWER ONN");
+lcd.noBacklight();
+const char MAIN_page[]  = R"=====(
+<!DOCTYPE html>
+<html>
+<body>
+<center>
+<h1>WiFi LED on off demo: 1</h1><br>
+<h1>Current status is : ON</h1><br>
+<h1>Click to turn <a href="ledOff">LED OFF</a></h1><br>
+<hr>
+<a href="https://www.youtube.com">GO to youtube</a>
+</center>
+</body>
+</html>
+)=====";
+String s = MAIN_page; //Read HTML contents
+server.send(200, "text/html", s); //Send web page
+}
+
+void handleLEDoff() {
+digitalWrite(LED,HIGH); 
+digitalWrite(LED,HIGH);//LED off
+lcd.backlight();
+lcd.setCursor(0,1);
+lcd.print("POWER OFF");
+const char MAIN_page[]  = R"=====(
+<!DOCTYPE html>
+<html>
+<body>
+<center>
+<h1>WiFi LED on off demo: 1</h1><br>
+<h1>Click to turn <a href="ledOn">LED ON</a></h1><br>
+<h1>Current status is : OFF</h1><br>
+<hr>
+<a href="https://www.youtube.com">GO to youtube</a>
+</center>
+</body>
+</html>
+)=====";
+String s = MAIN_page; //Read HTML contents
+server.send(200, "text/html", s); //Send web page
+}
+//==============================================================
+//                  SETUP
+//==============================================================
+void setup(void){
+WiFi.begin(ssid, password);  
+//Connect to your WiFi router
+//Onboard LED port Direction output
+Wire.begin(2,0);
+pinMode(LED,OUTPUT);
+//Power on LED state off
+digitalWrite(LED,HIGH);
+while (WiFi.status() != WL_CONNECTED)
+{
+lcd.begin();   // initializing the LCD
+lcd.backlight(); // Enable or Turn On the backlight 
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("WAITING FOR IP.....");
+delay(1000);
+lcd.clear(); 
+lcd.setCursor(0,1);
+lcd.print("WAITING FOR IP.....");
+}
+lcd.clear();
+lcd.setCursor(1,0);
+lcd.print(WiFi.localIP().toString());
+server.on("/", handleRoot);      //Which routine to handle at root location. This is display page
+server.on("/ledOn", handleLEDon); //as Per  <a href="ledOn">, Subroutine to be called
+server.on("/ledOff", handleLEDoff);
+server.begin();                  //Start server
+}
+
+void loop(void)
+{
+  server.handleClient(); 
+    
+}
